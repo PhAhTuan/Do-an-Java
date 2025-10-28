@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import SnowEffect from "./SnowEffect";
+
 
 export default function LoginScreen({ onLoginSuccess }) {
   const [mode, setMode] = useState("careseeker");
@@ -29,7 +31,7 @@ export default function LoginScreen({ onLoginSuccess }) {
     try {
       await new Promise((r) => setTimeout(r, 800));
       alert(`Đăng nhập thành công (${mode === "careseeker" ? "Khách" : "Admin"})`);
-      onLoginSuccess(); // 👉 chuyển sang DashboardScreen
+      onLoginSuccess(); 
     } catch (e) {
       alert("Đăng nhập thất bại. Vui lòng thử lại.");
     } finally {
@@ -47,18 +49,14 @@ export default function LoginScreen({ onLoginSuccess }) {
 
   return (
     <div style={styles.container}>
+      <SnowEffect /> 
       <div style={styles.header}>
-        <img
-          src="https://placehold.co/120x120?text=Elder"
-          alt="logo"
-          style={styles.logo}
-        />
+        <img src="https://placehold.co/120x120?text=Elder" alt="logo" style={styles.logo} />
         <h2 style={styles.title}>ELDER - CARE - CONNECT</h2>
         <p style={styles.subtitle}>
           Nền tảng kết nối dịch vụ chăm sóc người cao tuổi tại nhà
         </p>
       </div>
-
       <div style={styles.modeSwitchRow}>
         <button
           style={{
@@ -145,7 +143,7 @@ export default function LoginScreen({ onLoginSuccess }) {
 const styles = {
   container: {
     minHeight: '100vh',
-    backgroundColor: '#F7FAFC',
+    backgroundImage: 'linear-gradient(135deg, #E0F7FA, #FFFFFF)',
     padding: 20,
     display: 'flex',
     flexDirection: 'column',
@@ -175,7 +173,7 @@ const styles = {
     backgroundColor: 'white',
     borderRadius: 12,
     padding: 16,
-    boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
   },
   label: { fontSize: 13, color: '#2D3748', fontWeight: 700, marginBottom: 6 },
   input: {

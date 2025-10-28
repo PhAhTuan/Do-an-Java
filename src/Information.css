@@ -1,0 +1,154 @@
+
+
+.profile-container {
+  max-width: 950px;
+  margin: 50px auto;
+  padding: 25px;
+  background: #deebf7;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-container h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #2b6cb0;
+}
+
+.profile-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.profile-tabs button {
+  background: #edf2f7;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 500;
+}
+
+.profile-tabs button.active {
+  background: #2b6cb0;
+  color: white;
+}
+
+/* Nội dung chung */
+.profile-content {
+  padding: 15px;
+}
+
+/* Thông tin cá nhân */
+.info-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+}
+
+.info-details {
+  flex: 1;
+}
+
+.info-details label {
+  display: block;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.info-details input,
+.info-details select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+}
+
+.info-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Nút */
+.btn-primary {
+  background-color: #2b6cb0;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-outline {
+  background-color: white;
+  color: #2b6cb0;
+  border: 1.5px solid #2b6cb0;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-outline:hover {
+  background-color: #e2e8f0;
+}
+
+/* Các section khác */
+.service-card,
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #f7fafc;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.service-card img,
+.cart-item img {
+  width: 100px;
+  border-radius: 8px;
+}
+
+.cart-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+/* Bảng thanh toán */
+.payment-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.payment-table th,
+.payment-table td {
+  border: 1px solid #e2e8f0;
+  padding: 10px;
+  text-align: center;
+}
+
+.payment-table th {
+  background: #edf2f7;
+}
+
+/* Feedback */
+.feedback-card {
+  background: #f7fafc;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}

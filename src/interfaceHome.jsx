@@ -1,22 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import "./interfaceHome.css";
+import { useNavigate } from "react-router-dom";
 
 export default function InterfaceHome() {
+  const navigate = useNavigate();
+  const [openAIChat, setOpenAIChat] = useState(false);
+
   return (
     <div className="home-container">
-      {/* Header */}
+      {/* ----- HEADER ----- */}
       <header className="header">
-        <div className="logo">🌿 Elder Care Connet</div>
+        <div className="logo">🌿 Elder Care Connect</div>
         <nav className="nav">
           <button className="nav-link">Trang chủ</button>
           <button className="nav-link">Dịch vụ</button>
           <button className="nav-link">Tin tức</button>
           <button className="nav-link">Liên hệ</button>
         </nav>
-        <button className="btn-primary">Đăng xuất</button>
+        <div className="user-actions">
+          <button className="btn-primary" onClick={() => navigate("/information")}>
+            Cá nhân
+          </button>
+          <button className="btn-primary">Đăng xuất</button>
+        </div>
       </header>
 
-      {/* Hero Section */}
+      {/* ----- HERO ----- */}
       <section className="hero">
         <div className="hero-content">
           <h1>Chăm sóc người cao tuổi tận tâm & chuyên nghiệp</h1>
@@ -36,7 +45,7 @@ export default function InterfaceHome() {
         />
       </section>
 
-      {/* Services Section */}
+      {/* ----- DỊCH VỤ ----- */}
       <section className="services">
         <h2>Dịch vụ nổi bật</h2>
         <div className="service-grid">
@@ -64,7 +73,7 @@ export default function InterfaceHome() {
           </div>
           <div className="service-card">
             <img
-              src="https://images.unsplash.com/photo-1599058917212-d750089bc07b?auto=format&fit=crop&w=400&q=80"
+              src="/public/anh1.png"
               alt="Chăm sóc tại nhà"
             />
             <h3>Chăm sóc tại nhà</h3>
@@ -75,7 +84,7 @@ export default function InterfaceHome() {
         </div>
       </section>
 
-      {/* Articles Section */}
+      {/* ----- TIN TỨC ----- */}
       <section className="articles">
         <h2>Tin tức & Chia sẻ</h2>
         <div className="article-list">
@@ -108,10 +117,35 @@ export default function InterfaceHome() {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* ----- FOOTER ----- */}
       <footer className="footer">
         <p>© 2025 ElderCare Connect | Tận tâm – Chu đáo – Chuyên nghiệp</p>
       </footer>
+
+      {/* ----- NÚT AI HỖ TRỢ ----- */}
+      <div
+        className="ai-button"
+        onClick={() => setOpenAIChat(!openAIChat)}
+        title="Trợ lý AI"
+      >
+        🤖
+      </div>
+
+      {openAIChat && (
+        <div className="ai-chatbox">
+          <div className="ai-header">
+            <strong>Trợ lý AI</strong>
+            <button onClick={() => setOpenAIChat(false)}>✖</button>
+          </div>
+          <div className="ai-body">
+            <p>Xin chào 👋 Mình là AI hỗ trợ. Bạn cần giúp gì nào?</p>
+          </div>
+          <div className="ai-input">
+            <input type="text" placeholder="Nhập tin nhắn..." />
+            <button>Gửi</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

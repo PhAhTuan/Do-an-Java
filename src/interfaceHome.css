@@ -4,7 +4,7 @@
   background-color: #f8fafc;
 }
 
-/* HEADER */
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -28,22 +28,26 @@
   gap: 100px;
 }
 
+.user-actions {
+  display: flex;
+  gap: 10px; 
+}
+
 .nav-link {
   background: none;
   border: none;
-  color: #2d3748;
-  font-weight: 700;
-  text-transform: uppercase;  
-  letter-spacing: 1px;  
-  font-size: 15px;   
+  color: #333;
+  font-size: 16px;
   cursor: pointer;
-  transition: color 0.2s ease;
+  padding: 8px 14px;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
 }
 
 .nav-link:hover {
-  color: #2b6cb0;
+  background-color: #e2e8f0; /* xám nhẹ */
+  color: #2b6cb0; /* đậm hơn khi hover */
 }
-
 .btn-primary {
   background-color: #2b6cb0;
   color: white;
@@ -52,6 +56,9 @@
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s;
+  flex: 1; 
+  min-width: 100px; 
+  text-align: center;
 }
 
 .btn-primary:hover {
@@ -74,7 +81,7 @@
   color: white;
 }
 
-/* HERO SECTION */
+
 .hero {
   display: flex;
   align-items: center;
@@ -104,7 +111,7 @@
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
 }
 
-/* SERVICES */
+
 .services {
   padding: 60px 80px;
   text-align: center;
@@ -153,7 +160,7 @@
   font-size: 14px;
 }
 
-/* ARTICLES */
+
 .articles {
   padding: 60px 80px;
   background: #ebf8ff;
@@ -198,11 +205,109 @@
   color: #4a5568;
 }
 
-/* FOOTER */
+
 .footer {
   text-align: center;
   padding: 16px;
   background: #2b6cb0;
   color: white;
   margin-top: 40px;
+}
+
+/* ===== Nút AI góc phải ===== */
+.ai-button {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background-color: #2b6cb0;
+  color: white;
+  font-size: 28px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, background 0.3s;
+}
+
+.ai-button:hover {
+  transform: scale(1.05);
+  background-color: #1e4e8c;
+}
+
+/* ===== Hộp chat AI ===== */
+.ai-chatbox {
+  position: fixed;
+  bottom: 100px;
+  right: 30px;
+  width: 320px;
+  height: 400px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: fadeIn 0.3s ease;
+}
+
+.ai-header {
+  background: #2b6cb0;
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ai-body {
+  flex: 1;
+  padding: 12px;
+  background: #f9f9f9;
+  overflow-y: auto;
+  font-size: 14px;
+}
+
+.ai-input {
+  display: flex;
+  padding: 10px;
+  background: #f1f1f1;
+  border-top: 1px solid #ddd;
+}
+
+.ai-input input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+}
+
+.ai-input button {
+  margin-left: 8px;
+  background: #2b6cb0;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ai-input button:hover {
+  background: #1e4e8c;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
