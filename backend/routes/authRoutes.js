@@ -9,6 +9,9 @@ const router = express.Router();
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
+    if (!email || !password) {
+    return res.status(400).json({ message: "Thiếu email hoặc mật khẩu" });
+}
 
     const exist = await User.findOne({ email });
     if (exist) return res.json({ message: "Email đã tồn tại" });
@@ -51,7 +54,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// GET CURRENT USER
+// GET USER
 router.get("/me", auth, async (req, res) => {
   try {
     const userData = await User.findById(req.user.id).select("-password");

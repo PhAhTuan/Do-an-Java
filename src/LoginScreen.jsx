@@ -1,158 +1,138 @@
 import React, { useState } from "react";
 import SnowEffect from "./SnowEffect";
 
-
 export default function LoginScreen({ onLoginSuccess }) {
   const [mode, setMode] = useState("careseeker");
+  const [showRegister, setShowRegister] = useState(false); // Thêm state này
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState(""); // cho đăng ký
   const [loading, setLoading] = useState(false);
 
-  const validate = () => {
-    if (!email.trim()) {
-      alert("Vui lòng nhập email.");
-      return false;
-    }
-    const emailRe = /^\S+@\S+\.\S+$/;
-    if (!emailRe.test(email)) {
-      alert("Email không hợp lệ.");
-      return false;
-    }
-    if (!password) {
-      alert("Vui lòng nhập mật khẩu.");
-      return false;
-    }
+  const validateLogin = () => {
+    if (!email.trim()) { alert("Vui lòng nhập email."); return false; }
+    if (!password) { alert("Vui lòng nhập mật khẩu."); return false; }
     return true;
   };
 
-const onLogin = async () => {
-  if (!validate()) return;
-  setLoading(true);
+  const validateRegister = () => {
+    if (!email.trim()) { alert("Vui lòng nhập email."); return false; }
+    const emailRe = /^\S+@\S+\.\S+$/;
+    if (!emailRe.test(email)) { alert("Email không hợp lệ."); return false; }
+    if (!password) { alert("Vui lòng nhập mật khẩu."); return false; }
+    if (password !== confirmPassword) { alert("Mật khẩu và xác nhận mật khẩu không khớp."); return false; }
+    return true;
+  };
 
+  const onLogin = async () => {
+    if (!validateLogin()) return;
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          password,
+          role: mode === "careseeker" ? "user" : "admin",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.token) {
+        alert(data.message || "Đăng nhập thất bại.");
+        return;
+      }
+      localStorage.setItem("token", data.token);
+      alert("Đăng nhập thành công!");
+      onLoginSuccess(data.token, mode === "careseeker" ? "user" : "admin");
+    } catch (error) {
+      console.error(error);
+      alert("Không thể kết nối tới server.");
+    } finally { setLoading(false); }
+  };
+
+  const onRegister = async () => {
+  if (!validateRegister()) return;
+  setLoading(true);
   try {
-    const res = await fetch("http://localhost:5000/api/auth/login", {
+    const res = await fetch("http://localhost:5000/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email,
         password,
-        role: mode === "careseeker" ? "user" : "admin"
+        role: mode === "careseeker" ? "user" : "admin",
       }),
     });
-
     const data = await res.json();
-
     if (!res.ok) {
-      alert(data.message || "Đăng nhập thất bại.");
-    } else {
-      //Lưu token vào browser
-      localStorage.setItem("token", data.token);
-
-      alert("Đăng nhập thành công!");
-      onLoginSuccess(); 
+      alert(data.message || "Đăng ký thất bại.");
+      return;
     }
+    alert("Đăng ký thành công! Vui lòng đăng nhập.");
+    setShowRegister(false); 
+    setEmail(""); setPassword(""); setConfirmPassword("");
   } catch (error) {
-    alert("Lỗi kết nối server");
-  } finally {
-    setLoading(false);
-  }
+    console.error(error);
+    alert("Không thể kết nối tới server.");
+  } finally { setLoading(false); }
 };
 
-  const onRegister = () => {
-    alert(`Chuyển sang màn đăng ký (${mode})`);
-  };
 
-  const onForgotPassword = () => {
-    alert('Gửi link đặt lại mật khẩu tới email (demo).');
+  const toggleModeForm = () => {
+    setShowRegister(!showRegister);
+    setEmail(""); setPassword(""); setConfirmPassword("");
   };
 
   return (
     <div style={styles.container}>
-      <SnowEffect /> 
+      <SnowEffect />
       <div style={styles.header}>
         <img src="https://placehold.co/120x120?text=Elder" alt="logo" style={styles.logo} />
-        <h2 style={styles.title}>ELDER - CARE - CONNECT</h2>
-        <p style={styles.subtitle}>
-          Nền tảng kết nối dịch vụ chăm sóc người cao tuổi tại nhà
-        </p>
+        <h2 style={styles.title}>ELDER  CARE  CONNECT</h2>
+        <p style={styles.subtitle}>Nền tảng kết nối dịch vụ chăm sóc người cao tuổi tại nhà</p>
       </div>
+
       <div style={styles.modeSwitchRow}>
-        <button
-          style={{
-            ...styles.modeButton,
-            ...(mode === 'careseeker' ? styles.modeButtonActive : {}),
-          }}
-          onClick={() => setMode('careseeker')}
-        >
-          Khách hàng
-        </button>
-        <button
-          style={{
-            ...styles.modeButton,
-            ...(mode === 'admin' ? styles.modeButtonActive : {}),
-          }}
-          onClick={() => setMode('admin')}
-        >
-          Nhân viên
-        </button>
+        <button style={{ ...styles.modeButton, ...(mode === 'careseeker' ? styles.modeButtonActive : {}) }}
+                onClick={() => setMode('careseeker')}>Khách hàng</button>
+        <button style={{ ...styles.modeButton, ...(mode === 'admin' ? styles.modeButtonActive : {}) }}
+                onClick={() => setMode('admin')}>Nhân viên</button>
       </div>
 
       <div style={styles.form}>
         <label style={styles.label}>Email</label>
-        <input
-          type="email"
-          placeholder="vd: name@gmail.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={styles.input}
-        />
+        <input type="email" placeholder="vd: name@gmail.com"
+               value={email} onChange={(e) => setEmail(e.target.value)} style={styles.input} />
 
         <label style={styles.label}>Mật khẩu</label>
-        <input
-          type="password"
-          placeholder="Nhập mật khẩu"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={styles.input}
-        />
+        <input type="password" placeholder="Nhập mật khẩu"
+               value={password} onChange={(e) => setPassword(e.target.value)} style={styles.input} />
 
-        <div style={styles.forgotRow}>
-          <button onClick={onForgotPassword} style={styles.linkButton}>
-            Quên mật khẩu?
-          </button>
-        </div>
+        {showRegister && (
+          <>
+            <label style={styles.label}>Xác nhận mật khẩu</label>
+            <input type="password" placeholder="Nhập lại mật khẩu"
+                   value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} style={styles.input} />
+          </>
+        )}
 
-        <button onClick={onLogin} style={styles.loginButton} disabled={loading}>
-          {loading ? 'Đang xử lý...' : 'Đăng nhập'}
+        {!showRegister && (
+          <div style={styles.forgotRow}>
+            <button style={styles.linkButton} onClick={() => alert('Demo quên mật khẩu')}>Quên mật khẩu?</button>
+          </div>
+        )}
+
+        <button style={styles.loginButton} onClick={showRegister ? onRegister : onLogin} disabled={loading}>
+          {loading ? "Đang xử lý..." : showRegister ? "Đăng ký" : "Đăng nhập"}
         </button>
 
-        <div style={styles.orRow}>
-          <div style={styles.line}></div>
-          <span style={styles.orText}>HOẶC</span>
-          <div style={styles.line}></div>
-        </div>
-
-        <div style={styles.socialRow}>
-          <button style={styles.socialButton} onClick={() => alert('Đăng nhập Google (demo)')}>
-            Google
-          </button>
-          <button style={styles.socialButton} onClick={() => alert('Đăng nhập Facebook (demo)')}>
-            Facebook
-          </button>
-        </div>
-
         <div style={styles.registerRow}>
-          <span>Bạn chưa có tài khoản?</span>
-          <button onClick={onRegister} style={styles.linkButton}>
-            Đăng ký
+          <span>{showRegister ? "Đã có tài khoản?" : "Bạn chưa có tài khoản?"}</span>
+          <button style={styles.linkButton} onClick={toggleModeForm}>
+            {showRegister ? "Đăng nhập" : "Đăng ký"}
           </button>
         </div>
-      </div>
-
-      <div style={styles.footer}>
-        <p style={styles.footerText}>
-          Phiên bản demo • Bản quyền By Tuandz
-        </p>
       </div>
     </div>
   );
