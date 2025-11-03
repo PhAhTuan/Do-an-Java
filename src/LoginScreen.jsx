@@ -25,19 +25,38 @@ export default function LoginScreen({ onLoginSuccess }) {
     return true;
   };
 
-  const onLogin = async () => {
-    if (!validate()) return;
-    setLoading(true);
-    try {
-      await new Promise((r) => setTimeout(r, 800));
-      alert(`Đăng nhập thành công (${mode === "careseeker" ? "Khách" : "Admin"})`);
+const onLogin = async () => {
+  if (!validate()) return;
+  setLoading(true);
+
+  try {
+    const res = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        password,
+        role: mode === "careseeker" ? "user" : "admin"
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "Đăng nhập thất bại.");
+    } else {
+      //Lưu token vào browser
+      localStorage.setItem("token", data.token);
+
+      alert("Đăng nhập thành công!");
       onLoginSuccess(); 
-    } catch (e) {
-      alert("Đăng nhập thất bại. Vui lòng thử lại.");
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (error) {
+    alert("Lỗi kết nối server");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const onRegister = () => {
     alert(`Chuyển sang màn đăng ký (${mode})`);

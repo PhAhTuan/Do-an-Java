@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./interfaceHome.css";
 import { useNavigate } from "react-router-dom";
 
-export default function InterfaceHome() {
+export default function InterfaceHome({ onLogout }) {
   const navigate = useNavigate();
   const [openAIChat, setOpenAIChat] = useState(false);
 
@@ -10,7 +10,7 @@ export default function InterfaceHome() {
     <div className="home-container">
       {/* ----- HEADER ----- */}
       <header className="header">
-        <div className="logo">🌿 Elder Care Connect</div>
+        <div className="logo">Elder Care Connect</div>
         <nav className="nav">
           <button className="nav-link">Trang chủ</button>
           <button className="nav-link">Dịch vụ</button>
@@ -21,7 +21,7 @@ export default function InterfaceHome() {
           <button className="btn-primary" onClick={() => navigate("/information")}>
             Cá nhân
           </button>
-          <button className="btn-primary">Đăng xuất</button>
+          <button className="btn-primary" onClick={onLogout}>Đăng xuất</button>
         </div>
       </header>
 
