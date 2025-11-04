@@ -1,8 +1,9 @@
-const express = require("express");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const User = require("../models/user");
-const auth = require("../middleware/auth");
+import express from "express";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import User from "../models/user.js";
+import auth from "../middleware/auth.js";
+
 const router = express.Router();
 
 // REGISTER
@@ -10,8 +11,8 @@ router.post("/register", async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
     if (!email || !password) {
-    return res.status(400).json({ message: "Thiếu email hoặc mật khẩu" });
-}
+      return res.status(400).json({ message: "Thiếu email hoặc mật khẩu" });
+    }
 
     const exist = await User.findOne({ email });
     if (exist) return res.json({ message: "Email đã tồn tại" });
@@ -64,4 +65,4 @@ router.get("/me", auth, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

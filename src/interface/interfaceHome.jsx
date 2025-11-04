@@ -1,10 +1,53 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./interfaceHome.css";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function InterfaceHome({ onLogout }) {
   const navigate = useNavigate();
   const [openAIChat, setOpenAIChat] = useState(false);
+  const [messages, setMessages] = useState([
+    { sender: "ai", text: "Xin chào! Mình là trợ lý ElderCare. Bạn cần giúp gì nào?" }
+  ]);
+  const [inputText, setInputText] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const messagesEndRef = useRef(null);
+
+  // Scroll xuống cuối khi có tin nhắn mới
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, openAIChat]);
+
+  const handleSendMessage = async () => {
+    if (!inputText.trim()) return;
+    // Thêm tin nhắn của user
+    setMessages(prev => [...prev, { sender: "user", text: inputText }]);
+    setInputText("");
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.post(
+        "http://localhost:5000/api/chatbot",
+        { message: inputText },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setMessages(prev => [...prev, { sender: "ai", text: res.data.reply }]);
+    } catch (err) {
+      console.error(err);
+      setMessages(prev => [...prev, { sender: "ai", text: "Xin lỗi, AI không phản hồi được." }]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  
 
   return (
     <div className="home-container">
@@ -138,11 +181,26 @@ export default function InterfaceHome({ onLogout }) {
             <button onClick={() => setOpenAIChat(false)}>✖</button>
           </div>
           <div className="ai-body">
-            <p>Xin chào 👋 Mình là AI hỗ trợ. Bạn cần giúp gì nào?</p>
+            {messages.map((msg, index) => (
+              <div
+                key={index}
+                className={msg.sender === "ai" ? "ai-msg" : "user-msg"}
+              >
+                {msg.text}
+              </div>
+            ))}
+            {loading && <div className="ai-msg">Đang trả lời...</div>}
+            <div ref={messagesEndRef} />
           </div>
           <div className="ai-input">
-            <input type="text" placeholder="Nhập tin nhắn..." />
-            <button>Gửi</button>
+            <input
+              type="text"
+              placeholder="Nhập tin nhắn..."
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+            />
+            <button onClick={handleSendMessage}>Gửi</button>
           </div>
         </div>
       )}

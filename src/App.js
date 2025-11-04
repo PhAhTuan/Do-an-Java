@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import AuthScreen from "./LoginScreen"; 
-import InterfaceHome from "./interfaceHome";
-import Information from "./Information";
+import AuthScreen from "./interface/LoginScreen"; 
+import InterfaceHome from "./interface/interfaceHome";
+import Information from "./interface/Information";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import SnowEffect from "./SnowEffect";
+import SnowEffect from "../SnowEffect";
 
 export default function LoginScreen({ onLoginSuccess }) {
   const [mode, setMode] = useState("careseeker");
