@@ -165,45 +165,7 @@ export default function InterfaceHome({ onLogout }) {
         <p>© 2025 ElderCare Connect | Tận tâm – Chu đáo – Chuyên nghiệp</p>
       </footer>
 
-      {/* ----- NÚT AI HỖ TRỢ ----- */}
-      <div
-        className="ai-button"
-        onClick={() => setOpenAIChat(!openAIChat)}
-        title="Trợ lý AI"
-      >
-        🤖
-      </div>
-
-      {openAIChat && (
-        <div className="ai-chatbox">
-          <div className="ai-header">
-            <strong>Trợ lý AI</strong>
-            <button onClick={() => setOpenAIChat(false)}>✖</button>
-          </div>
-          <div className="ai-body">
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={msg.sender === "ai" ? "ai-msg" : "user-msg"}
-              >
-                {msg.text}
-              </div>
-            ))}
-            {loading && <div className="ai-msg">Đang trả lời...</div>}
-            <div ref={messagesEndRef} />
-          </div>
-          <div className="ai-input">
-            <input
-              type="text"
-              placeholder="Nhập tin nhắn..."
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-            />
-            <button onClick={handleSendMessage}>Gửi</button>
-          </div>
-        </div>
-      )}
+      
     </div>
   );
 }

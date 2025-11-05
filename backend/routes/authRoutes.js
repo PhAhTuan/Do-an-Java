@@ -1,8 +1,8 @@
-import express from "express";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import User from "../models/user.js";
-import auth from "../middleware/auth.js";
+const express = require("express");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const User = require("../models/user");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -22,7 +22,9 @@ router.post("/register", async (req, res) => {
     const newUser = new User({ name, email, password: hashedPassword, role });
     await newUser.save();
 
-    res.json({ message: "Đăng ký thành công" });
+    res.json({ 
+      message: "Đăng ký thành công"
+    });
   } catch (error) {
     res.json({ error: error.message });
   }
@@ -48,7 +50,12 @@ router.post("/login", async (req, res) => {
     res.json({
       message: "Đăng nhập thành công",
       token,
-      user: { name: user.name, email: user.email, role: user.role }
+      user: { 
+        id: user._id,   
+        name: user.name, 
+        email: user.email, 
+        role: user.role 
+      }
     });
   } catch (error) {
     res.json({ error: error.message });
@@ -65,4 +72,4 @@ router.get("/me", auth, async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;
