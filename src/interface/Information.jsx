@@ -1,144 +1,133 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./Information.css";
 
 export default function ProfilePage() {
-  const [tab, setTab] = useState("info"); // info | booked | cart | history | feedback
+  const [tab, setTab] = useState("info");
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const [user, setUser] = useState({
-    name: "Nguyễn Văn A",
-    email: "nguyenvana@example.com",
-    phone: "0901 234 567",
-    gender: "Nam",
-    dob: "12/03/1970",
-    avatar: "https://cdn-icons-png.flaticon.com/512/219/219983.png",
+  const [seeker, setSeeker] = useState({
+    avatar: "",
+    fullName: "",
+    phone: "",
+    address: "",
+    cccd: "",
+    healthCondition: "",
+    freeTime: [],
+    servicesNeeded: [],
   });
 
+  const token = localStorage.getItem("token");
+
+  // tải lại trang
+  useEffect(() => {
+    const fetchSeeker = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/seeker/me", { 
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        setSeeker(res.data);
+      } catch (err) {
+        console.log("Chưa có hồ sơ seeker");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSeeker();
+  }, []);
+
+  // thay đổi input
   const handleChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
+    setSeeker({ ...seeker, [e.target.name]: e.target.value });
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    alert("Cập nhật thông tin thành công!");
+  // Upload avatar
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("avatar", file);
+
+    const res = await axios.post("http://localhost:5000/api/seeker/upload-avatar", formData, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    setSeeker({ ...seeker, avatar: res.data.url });
   };
+
+  // lưu rồi update hoặc tạo mới
+  const handleSave = async () => {
+    try {
+      if (seeker._id) {
+        await axios.put("http://localhost:5000/api/seeker", seeker, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        alert("Cập nhật hồ sơ thành công ");
+      } else {
+        await axios.post("http://localhost:5000/api/seeker", seeker, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        alert("Tạo hồ sơ thành công ");
+      }
+
+      setIsEditing(false);
+    } catch (error) {
+      console.log(error);
+      alert("Có lỗi xảy ra ");
+    }
+  };
+
+  if (loading) return <h2>Đang tải dữ liệu</h2>;
 
   return (
     <div className="profile-container">
       <h1>👤 Trang cá nhân</h1>
 
-      {/* Thanh điều hướng tab */}
+      
       <div className="profile-tabs">
-        <button
-          className={tab === "info" ? "active" : ""}
-          onClick={() => setTab("info")}
-        >
-          Thông tin cá nhân
-        </button>
-        <button
-          className={tab === "booked" ? "active" : ""}
-          onClick={() => setTab("booked")}
-        >
-          Dịch vụ đã đặt
-        </button>
-        <button
-          className={tab === "cart" ? "active" : ""}
-          onClick={() => setTab("cart")}
-        >
-          Giỏ hàng
-        </button>
-        <button
-          className={tab === "history" ? "active" : ""}
-          onClick={() => setTab("history")}
-        >
-          Lịch sử thanh toán
-        </button>
-        <button
-          className={tab === "feedback" ? "active" : ""}
-          onClick={() => setTab("feedback")}
-        >
-          Đánh giá của tôi
-        </button>
+        <button className={tab === "info" ? "active" : ""} onClick={() => setTab("info")}>Thông tin cá nhân</button>
+        <button className={tab === "booked" ? "active" : ""} onClick={() => setTab("booked")}>Dịch vụ đã đặt</button>
+        <button className={tab === "cart" ? "active" : ""} onClick={() => setTab("cart")}>Giỏ hàng</button>
+        <button className={tab === "history" ? "active" : ""} onClick={() => setTab("history")}>Lịch sử thanh toán</button>
+        <button className={tab === "feedback" ? "active" : ""} onClick={() => setTab("feedback")}>Đánh giá của tôi</button>
       </div>
 
-      {/* Nội dung tab */}
       <div className="profile-content">
-        {/* TAB 1: Thông tin cá nhân */}
+        
         {tab === "info" && (
           <div className="info-section">
-            <img src={user.avatar} alt="Avatar" className="avatar" />
+            <img src={seeker.avatar || "https://cdn-icons-png.flaticon.com/512/219/219983.png"} alt="Avatar" className="avatar" />
+
+            {isEditing && <input type="file" onChange={handleAvatarUpload} />}
 
             <div className="info-details">
               {isEditing ? (
                 <>
-                  <label>
-                    Họ tên:
-                    <input
-                      type="text"
-                      name="name"
-                      value={user.name}
-                      onChange={handleChange}
-                    />
-                  </label>
-                  <label>
-                    Email:
-                    <input
-                      type="email"
-                      name="email"
-                      value={user.email}
-                      onChange={handleChange}
-                    />
-                  </label>
-                  <label>
-                    Số điện thoại:
-                    <input
-                      type="text"
-                      name="phone"
-                      value={user.phone}
-                      onChange={handleChange}
-                    />
-                  </label>
-                  <label>
-                    Giới tính:
-                    <select name="gender" value={user.gender} onChange={handleChange}>
-                      <option>Nam</option>
-                      <option>Nữ</option>
-                      <option>Khác</option>
-                    </select>
-                  </label>
-                  <label>
-                    Ngày sinh:
-                    <input
-                      type="date"
-                      name="dob"
-                      value={user.dob}
-                      onChange={handleChange}
-                    />
-                  </label>
+                  <label>Họ tên:<input name="fullName" value={seeker.fullName} onChange={handleChange}/></label>
+                  <label>SĐT:<input name="phone" value={seeker.phone} onChange={handleChange}/></label>
+                  <label>Địa chỉ:<input name="address" value={seeker.address} onChange={handleChange}/></label>
+                  <label>CCCD:<input name="cccd" value={seeker.cccd} onChange={handleChange}/></label>
+                  <label>Tình trạng sức khoẻ:<input name="healthCondition" value={seeker.healthCondition} onChange={handleChange}/></label>
+
                   <div className="info-actions">
-                    <button className="btn-primary" onClick={handleSave}>
-                      Lưu thay đổi
-                    </button>
-                    <button
-                      className="btn-outline"
-                      onClick={() => setIsEditing(false)}
-                    >
-                      Hủy
-                    </button>
+                    <button className="btn-primary" onClick={handleSave}>Lưu</button>
+                    <button className="btn-outline" onClick={() => setIsEditing(false)}>Huỷ</button>
                   </div>
                 </>
               ) : (
                 <>
-                  <p><strong>Họ tên:</strong> {user.name}</p>
-                  <p><strong>Email:</strong> {user.email}</p>
-                  <p><strong>Số điện thoại:</strong> {user.phone}</p>
-                  <p><strong>Giới tính:</strong> {user.gender}</p>
-                  <p><strong>Ngày sinh:</strong> {user.dob}</p>
-                  <button
-                    className="btn-primary"
-                    onClick={() => setIsEditing(true)}
-                  >
-                    Chỉnh sửa thông tin
+                  <p><b>Họ tên:</b> {seeker.fullName}</p>
+                  <p><b>SĐT:</b> {seeker.phone}</p>
+                  <p><b>Địa chỉ:</b> {seeker.address}</p>
+                  <p><b>CCCD:</b> {seeker.cccd}</p>
+                  <p><b>Tình trạng sức khoẻ:</b> {seeker.healthCondition}</p>
+
+                  <button className="btn-primary" onClick={() => setIsEditing(true)}>
+                    {seeker._id ? "Chỉnh sửa" : "Tạo hồ sơ"}
                   </button>
                 </>
               )}
@@ -146,103 +135,11 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* TAB 2: Dịch vụ đã đặt */}
-        {tab === "booked" && (
-          <div className="booked-section">
-            <h2>Dịch vụ đã đặt</h2>
-            <div className="service-card">
-              <img
-                src="https://images.unsplash.com/photo-1599058917212-d750089bc07b"
-                alt="Chăm sóc tại nhà"
-              />
-              <div>
-                <h3>Chăm sóc tại nhà</h3>
-                <p>Trạng thái: Đang thực hiện</p>
-                <button className="btn-outline">Xem chi tiết</button>
-              </div>
-            </div>
-            <div className="service-card">
-              <img
-                src="https://images.unsplash.com/photo-1580281657521-21b3cfa2a6a5"
-                alt="Tư vấn dinh dưỡng"
-              />
-              <div>
-                <h3>Tư vấn dinh dưỡng</h3>
-                <p>Trạng thái: Đã hoàn thành</p>
-                <button className="btn-outline">Đánh giá</button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 3: Giỏ hàng */}
-        {tab === "cart" && (
-          <div className="cart-section">
-            <h2>Giỏ hàng</h2>
-            <div className="cart-item">
-              <img
-                src="https://images.unsplash.com/photo-1588776814546-57aee6c11b40"
-                alt="Theo dõi sức khỏe"
-              />
-              <div>
-                <h3>Theo dõi sức khỏe định kỳ</h3>
-                <p>Giá: 500.000đ</p>
-                <div className="cart-actions">
-                  <button className="btn-primary">Đặt ngay</button>
-                  <button className="btn-outline">Xoá</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 4: Lịch sử thanh toán */}
-        {tab === "history" && (
-          <div className="history-section">
-            <h2>Lịch sử thanh toán</h2>
-            <table className="payment-table">
-              <thead>
-                <tr>
-                  <th>Dịch vụ</th>
-                  <th>Ngày thanh toán</th>
-                  <th>Số tiền</th>
-                  <th>Trạng thái</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Chăm sóc tại nhà</td>
-                  <td>12/10/2025</td>
-                  <td>1.000.000đ</td>
-                  <td>Thành công</td>
-                </tr>
-                <tr>
-                  <td>Tư vấn dinh dưỡng</td>
-                  <td>05/10/2025</td>
-                  <td>300.000đ</td>
-                  <td>Thành công</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {/* TAB 5: Đánh giá của tôi */}
-        {tab === "feedback" && (
-          <div className="feedback-section">
-            <h2>Đánh giá của tôi</h2>
-            <div className="feedback-card">
-              <h3>Chăm sóc tại nhà</h3>
-              <p>⭐⭐⭐⭐⭐</p>
-              <p>Nhân viên tận tâm, chu đáo. Rất hài lòng!</p>
-            </div>
-            <div className="feedback-card">
-              <h3>Tư vấn dinh dưỡng</h3>
-              <p>⭐⭐⭐⭐</p>
-              <p>Giải thích dễ hiểu, hữu ích cho người lớn tuổi.</p>
-            </div>
-          </div>
-        )}
+        
+        {tab === "booked" && <h2>Dịch vụ đã đặt (chưa kết nối API)</h2>}
+        {tab === "cart" && <h2>Giỏ hàng (chưa kết nối API)</h2>}
+        {tab === "history" && <h2>Lịch sử thanh toán (chưa kết nối API)</h2>}
+        {tab === "feedback" && <h2>Đánh giá của tôi (chưa kết nối API)</h2>}
       </div>
     </div>
   );
