@@ -1,6 +1,6 @@
-import jwt from "jsonwebtoken";
+const jwt = require("jsonwebtoken");
 
-export default function auth(req, res, next) {
+function auth(req, res, next) {
   const token = req.header("Authorization")?.replace("Bearer ", "");
 
   if (!token) return res.status(401).json({ message: "Token không tồn tại" });
@@ -13,3 +13,5 @@ export default function auth(req, res, next) {
     res.status(403).json({ message: "Token không hợp lệ" });
   }
 }
+
+module.exports = auth;

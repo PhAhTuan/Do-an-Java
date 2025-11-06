@@ -3,10 +3,10 @@ import SnowEffect from "../SnowEffect";
 
 export default function LoginScreen({ onLoginSuccess }) {
   const [mode, setMode] = useState("careseeker");
-  const [showRegister, setShowRegister] = useState(false); // Thêm state này
+  const [showRegister, setShowRegister] = useState(false); 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(""); // cho đăng ký
+  const [confirmPassword, setConfirmPassword] = useState(""); 
   const [loading, setLoading] = useState(false);
 
   const validateLogin = () => {
@@ -34,7 +34,7 @@ export default function LoginScreen({ onLoginSuccess }) {
         body: JSON.stringify({
           email,
           password,
-          role: mode === "careseeker" ? "user" : "admin",
+          role: mode === "careseeker" ?  "seeker" : "caregiver",
         }),
       });
       const data = await res.json();
@@ -44,7 +44,7 @@ export default function LoginScreen({ onLoginSuccess }) {
       }
       localStorage.setItem("token", data.token);
       alert("Đăng nhập thành công!");
-      onLoginSuccess(data.token, mode === "careseeker" ? "user" : "admin");
+      onLoginSuccess(data.token, mode === "careseeker" ? "seeker" : "caregiver");
     } catch (error) {
       console.error(error);
       alert("Không thể kết nối tới server.");
@@ -61,7 +61,7 @@ export default function LoginScreen({ onLoginSuccess }) {
       body: JSON.stringify({
         email,
         password,
-        role: mode === "careseeker" ? "user" : "admin",
+        role: mode === "careseeker" ? "seeker" : "caregiver",
       }),
     });
     const data = await res.json();
@@ -102,7 +102,7 @@ export default function LoginScreen({ onLoginSuccess }) {
 
       <div style={styles.form}>
         <label style={styles.label}>Email</label>
-        <input type="email" placeholder="vd: name@gmail.com"
+        <input type="email" placeholder="name@gmail.com"
                value={email} onChange={(e) => setEmail(e.target.value)} style={styles.input} />
 
         <label style={styles.label}>Mật khẩu</label>
@@ -119,7 +119,7 @@ export default function LoginScreen({ onLoginSuccess }) {
 
         {!showRegister && (
           <div style={styles.forgotRow}>
-            <button style={styles.linkButton} onClick={() => alert('Demo quên mật khẩu')}>Quên mật khẩu?</button>
+            <button style={styles.linkButton} onClick={() => alert('quên mật khẩu')}>Quên mật khẩu?</button>
           </div>
         )}
 

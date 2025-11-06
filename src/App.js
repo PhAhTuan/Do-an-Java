@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import AuthScreen from "./interface/LoginScreen"; 
+import LoginScreen from "./interface/LoginScreen";
 import InterfaceHome from "./interface/interfaceHome";
-import Information from "./interface/Information";
+import Information from "./interface/InformationSeeker";
+import CaregiverProfilePage from "./interface/informationCaregiver"; 
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [role, setRole] = useState(null); 
+  const [role, setRole] = useState(null);
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -17,7 +19,6 @@ export default function App() {
     }
   }, []);
 
-  // login 
   const handleLoginSuccess = (token, userRole) => {
     localStorage.setItem("token", token);
     localStorage.setItem("role", userRole);
@@ -25,7 +26,7 @@ export default function App() {
     setRole(userRole);
   };
 
-  // Logout
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
@@ -33,26 +34,39 @@ export default function App() {
     setRole(null);
   };
 
+  if (!isLoggedIn) {
+    return (
+      <Router>
+        <Routes>
+          <Route path="/" element={<LoginScreen onLoginSuccess={handleLoginSuccess} />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </Router>
+    );
+  }
+
+
   return (
     <Router>
-      {!isLoggedIn ? (
-        <Routes>
-          <Route path="/" element={<AuthScreen onLoginSuccess={handleLoginSuccess} />} />
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      ) : (
-        <Routes>
-          <Route 
-            path="/" 
-            element={<InterfaceHome onLogout={handleLogout} role={role} />} 
-          />
-          <Route 
-            path="/information" 
-            element={<Information role={role} />} 
-          />
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      )}
+      <Routes>
+     
+        <Route path="/" element={<InterfaceHome onLogout={handleLogout} role={role} />} />
+
+   
+        <Route
+          path="/profile"
+          element={
+            role === "seeker" ? (
+              <Information role={role} />
+            ) : (
+              <CaregiverProfilePage role={role} />
+            )
+          }
+        />
+
+
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
     </Router>
   );
 }

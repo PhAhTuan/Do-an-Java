@@ -1,26 +1,29 @@
-import express from "express";
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-import cors from "cors";
+const express = require("express");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const connectDB = require("./config/db"); 
 
-import authRoutes from "./routes/authRoutes.js";
-import chatbotRoutes from "./routes/chatbotRoutes.js";
+
+const authRoutes = require("./routes/authRoutes");
+const matchRoutes = require("./routes/matchRoutes");
+const seekerRoutes = require("./routes/seekerRoutes");
+const caregiverRoutes = require("./routes/caregiverRoutes");
 
 dotenv.config();
+connectDB();
+
 const app = express();
-console.log("ENV KEY >>", process.env.GEMINI_KEY);
+
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
-// MongoDB 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log(" MongoDB connected"))
-  .catch(err => console.log(" MongoDB error:", err));
-
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/chatbot", chatbotRoutes);
+app.use("/api/seeker", seekerRoutes);
+app.use("/api/caregiver", caregiverRoutes);
+app.use("/api", matchRoutes); 
 
+// Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(` Server running on port ${PORT}`));
-
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
