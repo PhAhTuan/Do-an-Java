@@ -1,70 +1,36 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import "./interfaceHome.css";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 export default function InterfaceHome({ onLogout }) {
   const navigate = useNavigate();
-  const [openAIChat, setOpenAIChat] = useState(false);
-  const [messages, setMessages] = useState([
-    { sender: "ai", text: "Xin chào! Mình là trợ lý ElderCare. Bạn cần giúp gì nào?" }
-  ]);
-  const [inputText, setInputText] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const messagesEndRef = useRef(null);
+  const role = localStorage.getItem("role"); 
 
-  // Scroll xuống cuối khi có tin nhắn mới
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const handleGoToProfile = () => {
+    navigate("/profile"); 
   };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, openAIChat]);
-
-  const handleSendMessage = async () => {
-    if (!inputText.trim()) return;
-    // Thêm tin nhắn của user
-    setMessages(prev => [...prev, { sender: "user", text: inputText }]);
-    setInputText("");
-    setLoading(true);
-
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.post(
-        "http://localhost:5000/api/chatbot",
-        { message: inputText },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      setMessages(prev => [...prev, { sender: "ai", text: res.data.reply }]);
-    } catch (err) {
-      console.error(err);
-      setMessages(prev => [...prev, { sender: "ai", text: "Xin lỗi, AI không phản hồi được." }]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  
 
   return (
     <div className="home-container">
       {/* ----- HEADER ----- */}
       <header className="header">
         <div className="logo">Elder Care Connect</div>
+
         <nav className="nav">
           <button className="nav-link">Trang chủ</button>
           <button className="nav-link">Dịch vụ</button>
           <button className="nav-link">Tin tức</button>
           <button className="nav-link">Liên hệ</button>
         </nav>
+
         <div className="user-actions">
-          <button className="btn-primary" onClick={() => navigate("/information")}>
+          <button className="btn-primary" onClick={handleGoToProfile}>
             Cá nhân
           </button>
-          <button className="btn-primary" onClick={onLogout}>Đăng xuất</button>
+          <button className="btn-outline" onClick={onLogout}>
+            Đăng xuất
+          </button>
         </div>
       </header>
 
@@ -73,14 +39,15 @@ export default function InterfaceHome({ onLogout }) {
         <div className="hero-content">
           <h1>Chăm sóc người cao tuổi tận tâm & chuyên nghiệp</h1>
           <p>
-            Dịch vụ chăm sóc toàn diện – sức khỏe, tinh thần và thể chất –
-            mang lại sự an tâm cho gia đình bạn.
+            Dịch vụ chăm sóc toàn diện – sức khỏe, tinh thần và thể chất – mang
+            lại sự an tâm cho gia đình bạn.
           </p>
           <div className="hero-actions">
             <button className="btn-primary">Đặt lịch ngay</button>
             <button className="btn-outline">Tìm hiểu thêm</button>
           </div>
         </div>
+
         <img
           className="hero-image"
           src="https://images.unsplash.com/photo-1581579184684-2cdbef1b1c06?auto=format&fit=crop&w=800&q=80"
@@ -103,6 +70,7 @@ export default function InterfaceHome({ onLogout }) {
               duy trì sức khỏe.
             </p>
           </div>
+
           <div className="service-card">
             <img
               src="https://images.unsplash.com/photo-1588776814546-57aee6c11b40?auto=format&fit=crop&w=400&q=80"
@@ -114,9 +82,10 @@ export default function InterfaceHome({ onLogout }) {
               vấn đề tiềm ẩn.
             </p>
           </div>
+
           <div className="service-card">
             <img
-              src="/public/anh1.png"
+              src="https://images.unsplash.com/photo-1618354691661-9064302c61b0?auto=format&fit=crop&w=400&q=80"
               alt="Chăm sóc tại nhà"
             />
             <h3>Chăm sóc tại nhà</h3>
@@ -144,6 +113,7 @@ export default function InterfaceHome({ onLogout }) {
               </p>
             </div>
           </div>
+
           <div className="article-item">
             <img
               src="https://images.unsplash.com/photo-1581093458791-9f6c3c92a3d5?auto=format&fit=crop&w=400&q=80"
@@ -164,8 +134,6 @@ export default function InterfaceHome({ onLogout }) {
       <footer className="footer">
         <p>© 2025 ElderCare Connect | Tận tâm – Chu đáo – Chuyên nghiệp</p>
       </footer>
-
-      
     </div>
   );
 }

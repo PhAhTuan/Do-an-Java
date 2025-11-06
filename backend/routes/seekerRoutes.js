@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 const Seeker = require("../models/Seeker");
 const auth = require("../middleware/auth");
+const checkRole = require("../middleware/checkRole");
 
 // tạo hồ sơ seeker
-router.post("/seeker", auth, async (req, res) => {
+router.post("/seeker", auth, checkRole("seeker"), async (req, res) => {
   try {
     const {
       avatar,
@@ -46,7 +47,7 @@ router.post("/seeker", auth, async (req, res) => {
 
 
 //  update hồ sơ 
-router.put("/", auth, async (req, res) => {
+router.put("/", auth, checkRole("seeker"),async (req, res) => {
   try {
     const seeker = await Seeker.findOneAndUpdate(
       { userId: req.user.id },
@@ -62,7 +63,7 @@ router.put("/", auth, async (req, res) => {
 
 
 // lấy hồ sơ của seeker từ login user
-router.get("/me", auth, async (req, res) => {
+router.get("/me", auth, checkRole("seeker"), async (req, res) => {
   try {
     const seeker = await Seeker.findOne({ userId: req.user.id });
 
@@ -81,7 +82,7 @@ router.get("/me", auth, async (req, res) => {
 const cloudinary = require("../utils/cloudinary");
 const upload = require("../middleware/upload");
 
-router.post("/upload-avatar", auth, upload.single("avatar"), async (req, res) => {
+router.post("/upload-avatar", auth, checkRole("seeker"), upload.single("avatar"), async (req, res) => {
   try {
     const b64 = Buffer.from(req.file.buffer).toString("base64");
     let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
@@ -100,6 +101,7 @@ router.post("/upload-avatar", auth, upload.single("avatar"), async (req, res) =>
     res.status(500).json({ error: error.message });
   }
 });
+
 
 
 module.exports = router;

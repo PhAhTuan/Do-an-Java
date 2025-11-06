@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db"); 
 
-// Import Routes
+
 const authRoutes = require("./routes/authRoutes");
 const matchRoutes = require("./routes/matchRoutes");
 const seekerRoutes = require("./routes/seekerRoutes");
@@ -22,7 +22,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/seeker", seekerRoutes);
 app.use("/api/caregiver", caregiverRoutes);
-app.use("/api", matchRoutes); // matching routes
+app.use("/api", matchRoutes); 
 
 // Start server
 const PORT = process.env.PORT || 5000;
