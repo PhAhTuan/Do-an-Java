@@ -1,14 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
+
 import LoginScreen from "./interface/LoginScreen";
 import InterfaceHome from "./interface/interfaceHome";
 import Information from "./interface/InformationSeeker";
-import CaregiverProfilePage from "./interface/informationCaregiver"; 
+import CaregiverProfilePage from "./interface/informationCaregiver";
+import ServicePage from "./interface/informationService";
+import Header from "./interface/header";
+import Footer from "./interface/footer";
+
+// Component bọc giao diện chính (với Header/Footer)
+function LayoutWithHeaderFooter({ children, onLogout }) {
+  const location = useLocation();
+
+  const hideFooterRoutes = ["/profile", "/settings", "/edit-profile"];
+
+  const hideFooter = hideFooterRoutes.includes(location.pathname);
+
+  return (
+    <>
+      <Header onLogout={onLogout} />
+      {children}
+      {!hideFooter && <Footer />} 
+    </>
+  );
+}
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [role, setRole] = useState(null);
-
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -26,10 +46,8 @@ export default function App() {
     setRole(userRole);
   };
 
-
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
+    localStorage.clear();
     setIsLoggedIn(false);
     setRole(null);
   };
@@ -45,28 +63,21 @@ export default function App() {
     );
   }
 
-
   return (
     <Router>
-      <Routes>
-     
-        <Route path="/" element={<InterfaceHome onLogout={handleLogout} role={role} />} />
-
-   
-        <Route
-          path="/profile"
-          element={
-            role === "seeker" ? (
-              <Information role={role} />
-            ) : (
-              <CaregiverProfilePage role={role} />
-            )
-          }
-        />
-
-
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+      <LayoutWithHeaderFooter onLogout={handleLogout}>
+        <Routes>
+          <Route path="/" element={<InterfaceHome />} />
+          <Route path="/services" element={<ServicePage />} />
+          <Route
+            path="/profile"
+            element={
+              role === "seeker" ? <Information /> : <CaregiverProfilePage />
+            }
+          />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </LayoutWithHeaderFooter>
     </Router>
   );
 }

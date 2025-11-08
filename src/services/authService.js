@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:3000"; // đổi thành domain nếu deploy
+const API_URL = "http://localhost:3000"; 
 
 export const loginUser = async (email, password) => {
   return await axios.post(`${API_URL}/login`, { email, password });

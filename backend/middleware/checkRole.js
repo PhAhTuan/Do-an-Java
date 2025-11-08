@@ -8,7 +8,7 @@ function checkRole(...allowedRoles) {
     
     if (!allowedRoles.includes(req.user.role)) {
       return res.status(403).json({
-        message: "Bạn không có quyền truy cập vào tài nguyên này",
+        message: "Bạn không có quyền truy cập",
         yourRole: req.user.role,
         allowedRoles
       });
