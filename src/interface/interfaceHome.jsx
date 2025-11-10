@@ -1,5 +1,6 @@
 import React from "react";
 import "./interfaceHome.css";
+import ChatWidget from "../components/chatIcon.jsx";
 
 export default function InterfaceHome() {
   return (
@@ -54,6 +55,7 @@ export default function InterfaceHome() {
           </div>
         </div>
       </section>
+      <ChatWidget />
     </div>
   );
 }

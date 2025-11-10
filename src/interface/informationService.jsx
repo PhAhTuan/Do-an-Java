@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./informationService.css";
 import { useNavigate } from "react-router-dom";
+import ChatWidget from "../components/chatIcon";
 
 export default function ServicePage() {
   const navigate = useNavigate();
@@ -23,7 +24,38 @@ export default function ServicePage() {
     fetchServices();
   }, []);
 
-  if (loading) return <h3 style={{ textAlign: "center" }}> Đang tải dịch vụ...</h3>;
+ //  Hàm xử lý khi khách hàng bấm “Tư vấn”
+  const handleConsult = async (serviceId) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Vui lòng đăng nhập để tư vấn.");
+        navigate("/");
+        return;
+      }
+
+      // Gọi API random caregiver (nhân viên rảnh)
+      const res = await axios.get("http://localhost:5000/api/match/random-caregiver", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.data.caregiver) {
+        // Lưu caregiver được chọn để mở chat
+        localStorage.setItem("chatWith", JSON.stringify(res.data.caregiver));
+
+        // Chuyển sang giao diện chat
+        navigate("/chat");
+      } else {
+        alert(res.data.message || "Không tìm thấy nhân viên nào.");
+      }
+    } catch (err) {
+      console.error("Lỗi khi kết nối nhân viên tư vấn:", err);
+      alert("Không thể kết nối tới nhân viên tư vấn. Vui lòng thử lại sau.");
+    }
+  };
+
+  if (loading) 
+    return <h3 style={{ textAlign: "center" }}> Đang tải dịch vụ...</h3>;
 
   return (
     <div className="home-container-service">
@@ -84,7 +116,7 @@ export default function ServicePage() {
                     </button>
                     <button
                       className="btn-primary"
-                      onClick={() => navigate("/chat")}
+                      onClick={() => handleConsult(service._id)}
                     >
                       Tư vấn
                     </button>
@@ -101,6 +133,7 @@ export default function ServicePage() {
           )}
         </section>
       </main>
+      <ChatWidget />
     </div>
   );
 }

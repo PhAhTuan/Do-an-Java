@@ -8,6 +8,8 @@ import CaregiverProfilePage from "./interface/informationCaregiver";
 import ServicePage from "./interface/informationService";
 import Header from "./interface/header";
 import Footer from "./interface/footer";
+import ChatScreen from "./interface/chatScreen";
+
 
 // Component bọc giao diện chính (với Header/Footer)
 function LayoutWithHeaderFooter({ children, onLogout }) {
@@ -76,6 +78,7 @@ export default function App() {
             }
           />
           <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/chat" element={<ChatScreen />} />
         </Routes>
       </LayoutWithHeaderFooter>
     </Router>
