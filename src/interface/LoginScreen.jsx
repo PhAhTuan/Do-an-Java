@@ -45,6 +45,12 @@ export default function LoginScreen({ onLoginSuccess }) {
       localStorage.setItem("token", data.token);
       alert("Đăng nhập thành công!");
       onLoginSuccess(data.token, mode === "careseeker" ? "seeker" : "caregiver");
+      localStorage.setItem("user", JSON.stringify({
+        id: data.user._id || data.user.id,
+        name: data.user.name,
+        role: data.user.role,
+ }));
+
     } catch (error) {
       console.error(error);
       alert("Không thể kết nối tới server.");

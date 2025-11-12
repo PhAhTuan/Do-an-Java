@@ -24,35 +24,42 @@ export default function ServicePage() {
     fetchServices();
   }, []);
 
- //  Hàm xử lý khi khách hàng bấm “Tư vấn”
-  const handleConsult = async (serviceId) => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Vui lòng đăng nhập để tư vấn.");
-        navigate("/");
-        return;
-      }
+ // Hàm xử lý khi khách hàng bấm “Tư vấn”
+const handleConsult = async (serviceId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
 
-      // Gọi API random caregiver (nhân viên rảnh)
-      const res = await axios.get("http://localhost:5000/api/match/random-caregiver", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (res.data.caregiver) {
-        // Lưu caregiver được chọn để mở chat
-        localStorage.setItem("chatWith", JSON.stringify(res.data.caregiver));
-
-        // Chuyển sang giao diện chat
-        navigate("/chat");
-      } else {
-        alert(res.data.message || "Không tìm thấy nhân viên nào.");
-      }
-    } catch (err) {
-      console.error("Lỗi khi kết nối nhân viên tư vấn:", err);
-      alert("Không thể kết nối tới nhân viên tư vấn. Vui lòng thử lại sau.");
+    if (!token || !user) {
+      alert("Vui lòng đăng nhập để được tư vấn.");
+      navigate("/");
+      return;
     }
-  };
+
+    // Gọi API lấy caregiver ngẫu nhiên
+    const res = await axios.get("http://localhost:5000/api/random-caregiver", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    // Nếu có nhân viên được chọn
+    if (res.data.caregiver) {
+      const caregiver = res.data.caregiver;
+
+      // Lưu thông tin nhân viên và người dùng hiện tại vào localStorage
+      localStorage.setItem("chatWith", JSON.stringify(caregiver));
+      localStorage.setItem("user", JSON.stringify({ id: user.id, name: user.name, role: user.role }));
+
+      // Điều hướng tới giao diện nhắn tin lớn
+      navigate("/chat");
+    } else {
+      alert(res.data.message || "Không tìm thấy nhân viên sẵn sàng tư vấn.");
+    }
+  } catch (err) {
+    console.error(" Lỗi khi kết nối nhân viên tư vấn:", err);
+    alert("Không thể kết nối tới nhân viên tư vấn. Vui lòng thử lại sau.");
+  }
+};
+
 
   if (loading) 
     return <h3 style={{ textAlign: "center" }}> Đang tải dịch vụ...</h3>;
