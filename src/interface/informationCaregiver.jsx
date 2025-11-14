@@ -111,6 +111,9 @@ export default function CaregiverProfilePage() {
         <button className={tab === "info" ? "active" : ""} onClick={() => setTab("info")}>
           Thông tin cá nhân
         </button>
+        <button className={tab === "wait-customers" ? "active" : ""} onClick={() => setTab("wait-customers")}>
+          Chờ xác nhận
+        </button>
         <button className={tab === "customers" ? "active" : ""} onClick={() => setTab("customers")}>
           Khách hàng đã xác nhận
         </button>
@@ -168,6 +171,13 @@ export default function CaregiverProfilePage() {
                 </>
               )}
             </div>
+          </div>
+        )}
+
+        {tab === "wait-customers" && (
+          <div className="wait-customer-section">
+            <h2>Chờ xác nhận</h2>
+            <p>(chưa hoàn thành )</p>
           </div>
         )}
 

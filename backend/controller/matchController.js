@@ -11,11 +11,10 @@ exports.matchCaregiver = async (req, res) => {
     let results = [];
 
     caregivers.forEach(cg => {
-      // Hard Filter: schedule phải khớp
+      
       const hasScheduleMatch = seeker.schedule.some(s => cg.availability.includes(s));
       if (!hasScheduleMatch) return;
 
-      // Soft Score
       const skillsMatch = seeker.requiredSkills.filter(skill => cg.skills.includes(skill)).length;
       const scoreSkills = skillsMatch / seeker.requiredSkills.length; 
 

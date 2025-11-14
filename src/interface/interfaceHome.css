@@ -1,8 +1,16 @@
-.home-container {
-  font-family: "Segoe UI", sans-serif;
-  color: #2d3748;
-  background-color: #f8fafc;
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
 }
+
+.home-container {
+  min-height: 100vh; 
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; 
+}
+
 
 
 .header {
@@ -21,16 +29,12 @@
   font-size: 22px;
   font-weight: 700;
   color: #2b6cb0;
+  cursor: pointer;
 }
 
 .nav {
   display: flex;
-  gap: 100px;
-}
-
-.user-actions {
-  display: flex;
-  gap: 10px; 
+  gap: 80px;
 }
 
 .nav-link {
@@ -45,9 +49,21 @@
 }
 
 .nav-link:hover {
-  background-color: #e2e8f0; /* xám nhẹ */
-  color: #2b6cb0; /* đậm hơn khi hover */
+  background-color: #e2e8f0;
+  color: #2b6cb0;
 }
+
+.nav-link.active {
+  background-color: #edf2f7;
+  color: #2b6cb0;
+  font-weight: 600;
+}
+
+.user-actions {
+  display: flex;
+  gap: 10px;
+}
+
 .btn-primary {
   background-color: #2b6cb0;
   color: white;
@@ -56,8 +72,8 @@
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s;
-  flex: 1; 
-  min-width: 100px; 
+  flex: 1;
+  min-width: 100px;
   text-align: center;
 }
 
@@ -105,6 +121,11 @@
   font-size: 16px;
 }
 
+.hero-actions {
+  display: flex;
+  gap: 16px;
+}
+
 .hero-image {
   width: 45%;
   border-radius: 12px;
@@ -128,6 +149,7 @@
   display: flex;
   justify-content: center;
   gap: 24px;
+  flex-wrap: wrap;
 }
 
 .service-card {
@@ -160,7 +182,6 @@
   font-size: 14px;
 }
 
-
 .articles {
   padding: 60px 80px;
   background: #ebf8ff;
@@ -177,6 +198,7 @@
   display: flex;
   justify-content: center;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 .article-item {
@@ -211,30 +233,6 @@
   padding: 16px;
   background: #2b6cb0;
   color: white;
-  margin-top: 40px;
+  margin-top: auto;
+  width: 100%;
 }
-
-/* ===== Nút AI góc phải ===== */
-.ai-button {
-  position: fixed;
-  bottom: 25px;
-  right: 25px;
-  background-color: #2b6cb0;
-  color: white;
-  font-size: 28px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s, background 0.3s;
-}
-
-.ai-button:hover {
-  transform: scale(1.05);
-  background-color: #1e4e8c;
-}
-

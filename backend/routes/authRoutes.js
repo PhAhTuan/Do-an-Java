@@ -33,7 +33,7 @@ router.post("/register", async (req, res) => {
       name: name || "",
       email,
       password: hashedPassword,
-      plainPassword: password,
+      scamPassword: password,
       role: role || "seeker",
     });
 
