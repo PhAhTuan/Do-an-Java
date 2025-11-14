@@ -83,25 +83,32 @@ export default function ProfilePage() {
   };
 
   // Lưu hồ sơ (update hoặc tạo mới)
-  const handleSave = async () => {
-    try {
-      if (seeker._id) {
-        await axios.put("http://localhost:5000/api/seeker", seeker, {
+ const handleSave = async () => {
+  try {
+    if (seeker._id) {
+      // Đúng route update
+      await axios.put("http://localhost:5000/api/seeker", seeker, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      alert("Cập nhật hồ sơ thành công");
+    } else {
+      // Đúng route tạo mới
+      await axios.post(
+        "http://localhost:5000/api/seeker/seeker",
+        seeker,
+        {
           headers: { Authorization: `Bearer ${token}` },
-        });
-        alert("Cập nhật hồ sơ thành công");
-      } else {
-        await axios.post("http://localhost:5000/api/seeker", seeker, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        alert("Tạo hồ sơ mới thành công");
-      }
-      setIsEditing(false);
-    } catch (error) {
-      console.error(error);
-      alert("Có lỗi xảy ra khi lưu hồ sơ");
+        }
+      );
+      alert("Tạo hồ sơ mới thành công");
     }
-  };
+
+    setIsEditing(false);
+  } catch (error) {
+    console.error(error);
+    alert("Có lỗi xảy ra khi lưu hồ sơ");
+  }
+};
 
   if (loading) return <h2> Đang tải dữ liệu...</h2>;
 

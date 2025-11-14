@@ -45,6 +45,9 @@ export default function Header({ onLogout }) {
         <button className="btn-primary" onClick={() => navigate("/profile")}>
           Cá nhân
         </button>
+         <button className="btn-outline" onClick={() => navigate("/chat")}>
+          Tin nhắn
+        </button>
         <button className="btn-outline" onClick={onLogout}>
           Đăng xuất
         </button>

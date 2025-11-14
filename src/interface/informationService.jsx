@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./informationService.css";
 import { useNavigate } from "react-router-dom";
-import ChatWidget from "../components/chatIcon";
+
 
 export default function ServicePage() {
   const navigate = useNavigate();
@@ -140,7 +140,6 @@ const handleConsult = async (serviceId) => {
           )}
         </section>
       </main>
-      <ChatWidget />
     </div>
   );
 }
